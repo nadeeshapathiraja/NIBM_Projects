@@ -1,81 +1,47 @@
-<?php 
+<?php
+	$sid="";
+	$name="";
+	$age="";
+	$address="";
 
-//connect server
-	$username="nadeesha";
-	$password="pdnc";
-	$hostname="localhost";
-	$con=mysqli_connect($hostname,$username,$password);
+		
+if (isset($_REQUEST["searchid"])){
+
+		$searchid=$_REQUEST["searchid"];
 	
-//connect database
+	
+	$con=mysqli_connect("localhost","nadeesha","pdnc");
+	
+	
 	$database=mysqli_select_db($con,"students");
 	
-//select table 
-	$sql="SELECT * FROM student";
 	
-//get result for all table data
+	$sql="SELECT * FROM student WHERE sid='$searchid' ";
+	
+	
 	$result=mysqli_query($con,$sql);
-
-//use row variable for access line by line in result/ database row by row 
-echo "<table border=1 align=center>
-		<tr bgcolor=#FFFF00>
-		<th>St Id</th>
-		<th>Name</th>
-		<th>Age</th>
-		<th>Address</th>
-		</tr>";
-		$c=0;
-	while($row=mysqli_fetch_array($result)){
-		if($c%2==0){
-			$col="bgcolor=red";
-		}
-		else{
-			$col="bgcolor=green";
-		}
-			echo "
-		<tr $col>
-		<td>$row[0]</td>
-		<td>$row[1]</td>
-		<td>$row[2]</td>
-		<td>$row[3]</td>
-		</tr>
-		";
-		$c++;
-		
+ 
+ 	if($row = mysqli_fetch_array($result)){
+		$sid=$row[0];
+		$name=$row[1];
+		$age=$row[2];
+		$address=$row[3];
+		//echo "Records Updated";
+	}else{
+		echo "Not  This Record In Database<br/>";	
 	}
-	echo "</table>";
 	
-//close server
+//CLOSE CONNECTION
 	mysqli_close($con);
 	
+	
+	}
 ?>
-
-
-
-
-<html>
-<body>
-<form method="post" action="#" name="form" style="text-align:center" >
-<br/>
-Enter SId: <input type="text" name="searchid" size="10px"   /> 
-
-
-</form>
-
-<form method="post" action="#" name="form" style="text-align:center" >
-<br/>
-
-<input type="submit" name="delete" value="Delete"/><input type="reset" name="reset" /></td>
-
-
-</form>
-</body>
-</html>
-
 <?php
 
-if (isset($_REQUEST["delete"])){
+if (isset($_REQUEST["sid"])){
 
-	
+	$dsid=$_POST["sid"];
 
 	$con=mysqli_connect("localhost","nadeesha","pdnc");
 	
@@ -83,7 +49,7 @@ if (isset($_REQUEST["delete"])){
 	$database=mysqli_select_db($con,"students");
 	
 	
-$sql="DELETE FROM student WHERE sid=$_POST[searchid]";
+$sql="DELETE FROM student WHERE sid='$dsid'";
 	
 	
 if (mysqli_query($con, $sql)) {
@@ -95,3 +61,52 @@ if (mysqli_query($con, $sql)) {
 	mysqli_close($con);
 }
 ?>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Delete  Student</title>
+</head>
+
+<body>
+
+<form method="post" action="#" name="form" style="text-align:center" >
+<h1>Delete Student</h1>
+Enter SId: <input type="text" name="searchid" size="10px" value="<?php echo $sid; ?>"  />
+<input type="submit" name="search" value="Search" />
+</form>
+<form method="post" action="#" name="form" style="text-align:center">
+<br/ >
+<table align="center">
+<tr>
+<td>St ID</td>
+<td><input type="text" name="sid" value="<?php echo $sid; ?>" /></td>
+</tr>
+<tr>
+<td>Name</td>
+<td><input type="text" name="name" value="<?php echo $name; ?>" /></td>
+</tr>
+<tr>
+<td>Age</td>
+<td><input type="text" name="age" value="<?php echo $age; ?>" /></td>
+</tr>
+<tr>
+<td>Address</td>
+<td><textarea name="address"><?php echo $address; ?></textarea></td>
+</tr>
+<tr>
+<td></td>
+<td><input type="submit" name="delete" value="DELETE"/><input type="reset" name="reset" /></td>
+</tr>
+
+</table>
+
+<a href="insertForm.php" >Insert Student Details</a><br/>
+<a href="updateForm.php" >Update Student Details</a>
+</form>
+</body>
+
+</html> 
+
